@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TradeProtextRx</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Admin Dashboard</h1>
+        
+        <nav class="nav nav-tabs mb-4">
+            <button class="nav-link active" id="ordersTab" data-bs-toggle="tab" data-bs-target="#ordersContainer">Orders</button>
+            <button class="nav-link" id="archivedOrdersTab" data-bs-toggle="tab" data-bs-target="#archivedOrdersContainer">Archived Orders</button>
+            <button class="nav-link" id="addItemTab" data-bs-toggle="tab" data-bs-target="#addItemContainer">Add Item</button>
+            <button class="nav-link" id="manageWhitelistTab" data-bs-toggle="tab" data-bs-target="#manageWhitelistContainer">Whitelist</button>
+            <button class="nav-link" id="manageCompaniesTab" data-bs-toggle="tab" data-bs-target="#manageCompaniesContainer">Companies</button>
+            <button class="btn btn-outline-danger ms-auto" id="logout">Logout</button>
+        </nav>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="ordersContainer">
+                <h2>Active Orders</h2>
+                <div class="mb-3">
+                    <label for="activeOrdersSort" class="form-label">Sort by:</label>
+                    <select id="activeOrdersSort" class="form-select">
+                        <option value="date">Date</option>
+                        <option value="company">Company</option>
+                    </select>
+                </div>
+                <div id="activeOrdersList"></div>
+            </div>
+            <div class="tab-pane fade" id="archivedOrdersContainer">
+                <h2>Archived Orders</h2>
+                <div class="mb-3">
+                    <label for="archivedOrdersSort" class="form-label">Sort by:</label>
+                    <select id="archivedOrdersSort" class="form-select">
+                        <option value="date">Date</option>
+                        <option value="company">Company</option>
+                    </select>
+                </div>
+                <div id="archivedOrdersList"></div>
+            </div>
+            <div class="tab-pane fade" id="addItemContainer">
+                <h2>Add Item</h2>
+                <form id="addItemForm">
+                    <div class="mb-3">
+                        <label for="itemType" class="form-label">Item Type</label>
+                        <select id="itemType" class="form-select" name="itemType" required>
+                            <option value="addon">Addon</option>
+                            <option value="frame">Frame</option>
+                            <option value="lense">Lens</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemName" class="form-label">Item Name</label>
+                        <input type="text" id="itemName" class="form-control" name="itemName" required>
+                    </div>
+                    <div id="addonFields" class="mb-3" style="display: none;">
+                        <label for="addonOption1" class="form-label">Addon Option 1</label>
+                        <input type="text" id="addonOption1" class="form-control" name="addonOption1">
+                        <label for="addonOption2" class="form-label">Addon Option 2</label>
+                        <input type="text" id="addonOption2" class="form-control" name="addonOption2">
+                    </div>
+                    <div id="frameImageUpload" class="mb-3" style="display: none;">
+                        <label for="frameImage" class="form-label">Frame Image</label>
+                        <input type="file" id="frameImage" class="form-control" name="frameImage" accept="image/*">
+                    </div>
+                    <div id="priceInput" class="mb-3" style="display: none;">
+                        <label for="itemPrice" class="form-label">Price</label>
+                        <input type="number" id="itemPrice" class="form-control" name="itemPrice" step="0.01" min="0">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </form>
+                
+                <p id="addItemMessage" class="mt-3"></p>
+                <div id="itemsContainer" class="mt-4">
+                    <ul id="framesList" class="list-group"></ul>
+                </div>>
+            </div>
+            
+            
+            <div class="tab-pane fade" id="manageWhitelistContainer">
+                <h2>Whitelist</h2>
+                <form id='addWhitelistForm' class='mb-3'>
+                    <div class='input-group'>
+                        <input type='email' id='newWhitelistEmail' class='form-control' placeholder='Enter email' required>
+                        <button type='submit' class='btn btn-primary'>Add to Whitelist</button>
+                    </div>
+                </form>
+                <ul id="whitelistedEmails" class="list-group"></ul>
+            </div>
+      <div class="tab-pane fade" id="manageCompaniesContainer">
+    <h2>Companies</h2>
+    <form id="addCompanyForm" class="mb-3">
+        <div class="input-group">
+            <input type="text" id="newCompanyName" class="form-control" placeholder="Enter company name" required>
+            <button type="submit" class="btn btn-primary">Add Company</button>
+        </div>
+    </form>
+    <ul id="companiesList" class="list-group">
+        <!-- Companies will be dynamically populated here -->
+    </ul>
+</div>
+        </div>
+    </div>
+
+    <div id="errorModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalErrorMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
